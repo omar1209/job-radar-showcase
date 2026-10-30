@@ -1,0 +1,153 @@
+# What to search for and what to throw away before Claude ever sees a posting.
+# Everything here is safe to edit. Claude does the real judging, so searches
+# are intentionally broad: a wide net costs fractions of a cent per posting.
+
+# LinkedIn/Indeed: each run reads back to the previous successful run plus 2 hours
+# (minimum 3h, maximum 48h), so nights and weekends between runs leave no gaps.
+
+linkedin:
+  location: "Vancouver, British Columbia, Canada"
+  distance_miles: 40
+  results_per_query: 60
+  # Your original five searches, expanded. LinkedIn understands OR + quotes.
+  queries:
+    - '"economic analyst" OR "economics analyst" OR "research analyst" OR "policy analyst" OR "market research analyst" OR "research associate" OR "research officer" OR "junior economist" OR "economist" OR "research assistant" OR "research coordinator"'
+    - '"data analyst" OR "business analyst" OR "reporting analyst" OR "business intelligence analyst" OR "BI analyst" OR "insights analyst" OR "analytics associate" OR "operations analyst" OR "data specialist" OR "data coordinator" OR "program evaluation"'
+    - '"investment operations" OR "client reporting" OR "performance analyst" OR "portfolio analyst" OR "investment analyst" OR "fund accounting" OR "data quality analyst" OR "credit analyst" OR "risk analyst" OR "pricing analyst" OR "financial analyst" OR "FP&A" OR "budget analyst" OR "planning analyst"'
+    - '"junior analyst" OR "associate analyst" OR "analyst I" OR "analyst 1" OR "trade support" OR "middle office" OR "settlements" OR "investment associate" OR "portfolio assistant" OR "associate investment advisor" OR "investment representative" OR "administrative associate"'
+    - '"personal banking associate" OR "personal banker" OR "financial services representative" OR "client service representative" OR "client service associate" OR "member service representative" OR "new accounts" OR "investment assistant" OR "advisor assistant" OR "client associate" OR "sales assistant" OR "client onboarding" OR "KYC"'
+    - '"customer experience associate" OR "client advisor" OR "everyday banker" OR "client experience associate" OR "banking advisor" OR "financial advisor" OR "relationship banker" OR "mobile mortgage" OR "financial planner associate"'
+    - '"analyst program" OR "associate program" OR "rotational program" OR "new graduate" OR "recent graduate" OR "graduate program" OR "management trainee" OR trainee OR "early talent" OR "entry level"'
+  # Remote roles anywhere in Canada: the same queries, location Canada, "AND remote" added (LinkedIn
+  # ignores its remote filter for visitors who aren't signed in). Each result is checked against its full
+  # posting, so these run every few hours (reading back to the last time they ran), and Indeed's remote
+  # searches below run at the same time.
+  remote_canada: true
+  remote_results_per_query: 25
+  remote_every_hours: 3
+
+indeed:
+  location: "Vancouver, BC"
+  distance_miles: 40
+  results_per_query: 100
+  # Indeed matches words anywhere in a posting, so broad words ("associate", "coordinator",
+  # "client service", "research", "junior", "entry level") mostly returned retail, trades and
+  # health jobs. Trimmed 2026-10-21 after measuring what each search found that no other did.
+  queries:
+    - analyst
+    - economist
+    - policy
+    - "data analyst"
+    - "business analyst"
+    - "financial analyst"
+    - "research assistant"
+    - banking
+    - "bank teller"
+    - "credit union"
+    - "financial services"
+    - "client service representative"
+    - "wealth management"
+    - investment
+    - mortgage
+    - KYC
+    - "new graduate"
+    - trainee
+  # Remote roles anywhere in Canada, every remote_every_hours (see linkedin). Indeed tags remote jobs itself
+  # and leaves hybrid ones out, so these need no checking.
+  remote_queries: [analyst, economist, policy, "research assistant", investment, banking, KYC, "new graduate"]
+  remote_results_per_query: 50
+
+# Postings written mostly in French are dropped before Claude sees them (bilingual ones are kept): they
+# need French, which the screen counts as a blocker anyway. Set to false once you can work in French.
+skip_french_postings: true
+
+# Where you're willing to work. A job passes if ANY of its locations is:
+#   - one of these Metro Vancouver cities, or
+#   - BC-wide with no specific city ("British Columbia, Canada", "Multiple Locations, BC"), or
+#   - remote within Canada.
+locations:
+  cities:
+    - vancouver
+    - burnaby
+    - richmond
+    - surrey
+    - new westminster
+    - coquitlam
+    - port coquitlam
+    - port moody
+    - north vancouver
+    - west vancouver
+    - delta
+    - tsawwassen
+    - ladner
+    - langley
+    - lower mainland
+    - metro vancouver
+    - white rock
+    - maple ridge
+    - pitt meadows
+    - "sea island"     # YVR
+  # Any location containing one of these is rejected outright.
+  reject:
+    - washington
+    - ", wa"
+    - " wa,"
+    - " wa "
+    - usa
+    - united states
+    - vancouver island
+  # A posting that says "remote" is accepted if it also mentions Canada or BC
+  # (Manulife writes "CAN, British Columbia - Full Time Remote").
+  remote_needs: [canada, "can,", british columbia, ", bc", " bc,", " bc "]
+
+titles:
+  # Seniority words drop a title ("Head Office", "Lead Generation", "Staff Accountant" aren't seniority)...
+  seniority: '\b(senior|sr\.?|principal|chief|director|vp|vice president|manager|supervisor|architect|partner)\b|\blead\b(?!\s+generation)|\bhead\b(?!\s+office)|\bstaff\b(?!\s+accountant)'
+  # ...unless it also has one of these ("Assistant Manager", "Associate Relationship Manager").
+  seniority_rescue: '\b(assistant|associate|junior|jr\.?|trainee|i|1|entry)\b'
+  # Titles with any of these words are never dropped by the "reject" list below (seniority still applies):
+  # "Retail Credit Analyst", "Sales Associate, Wealth Management", "Contact Centre Advisor - Banking".
+  keep_if: '\b(analy\w*|research\w*|econom\w*|polic(y|ies)|credit|lend\w*|loans?|mortgage|bank\w*|financ\w*|invest\w*|wealth|portfolio|funds?|kyc|aml|compliance|actuar\w*|underwrit\w*|pricing|data|reporting|statistic\w*|account(ant|ing))\b'
+  # Always dropped, even with a keep_if word (these require current enrolment).
+  always_reject:
+    - '\b(intern|internship|co-?op|summer student)\b|^\s*student\s*[,:(-]|\bstudent (assistant|worker|position|employee|job)s?\b'
+  # Dropped unless the title has a keep_if word (regex, case-insensitive, matched on the title).
+  reject:
+    - '\b(nurse|rn|lpn|physician|pharmacist|therapist|counsell?or|psychologist|dental|veterinar)'
+    - '\b(cook|chef|dishwasher|server|bartender|cashier|custodian|janitor|cleaner|housekeep)'
+    - '\b(electrician|mechanic|technician|millwright|welder|plumber|carpenter|machinist|driver|warehouse|forklift|labou?rer)\b'
+    - '\b(software|devops|sre|firmware|embedded|full[- ]stack|front[- ]end|back[- ]end)\b.*\b(engineer|developer)\b'
+    - '\b(engineer|engineering)\b'
+    - '\b(professor|lecturer|instructor|postdoc|post-doctoral|teacher)\b'
+    - '\b(lawyer|counsel|paralegal)\b'
+    # Retail / hospitality / service jobs that don't build toward your target career.
+    # (Bank-branch roles are unaffected: they're titled advisor/associate/representative.)
+    - '\b(attendant|barista|crew( member)?|stocker|merchandiser|picker|packer|cart|lot|greeter|host(ess)?|valet|usher)\b'
+    - '\b(store|retail(?! bank)|shop|outlet|boutique|showroom|warehouse|distribution centre|fulfil?ment)\b'
+    - '\b(lumber|building materials|flooring|garden|paint|plumbing|appliances?|furniture|mattress)\b'
+    - '\b(sales (associate|representative|consultant|advisor)|key ?holder|beauty|cosmetics?|apparel|footwear|fragrance)\b'
+    - '\b(security guard|caregiver|care aide|personal support|nanny|daycare|early childhood|dog|groomer|pet)\b'
+    - '\b(telemarketing|door[- ]to[- ]door)\b'   # call/contact centres: Claude decides (bank ones are in scope)
+    - '\b(delivery (driver|associate|helper)|courier|dispatcher|mover|landscap|janitorial|kitchen|restaurant|hotel|front desk)\b'
+
+# Volunteer roles that build experience for your target jobs (read once a day).
+volunteer:
+  enabled: true
+  alert_min_score: 75       # career value needed to email you
+  indeed_queries: [volunteer]
+
+scoring:
+  # Stage 1 - Claude Haiku 5.5 throws out postings outside your career tracks (cheap).
+  gate_model: claude-haiku-5-5
+  # Stage 2 - Claude Sonnet 5.5 scores relevance + attainability for everything in scope.
+  screen_model: claude-sonnet-5-5
+  screen_effort: medium     # low saves little (outputs are short), high = more careful
+  # Skip the Sonnet screen when Haiku's quick relevance estimate is below this: in Oct 25-28 that would have
+  # skipped 31% of screens and lost one match (score 56) and no alert. The job still goes to Screened out
+  # with Haiku's reason. quick_audit_pct of those jobs are screened anyway, so data/screen_log.jsonl keeps
+  # showing whether the cutoff is safe. 0 turns the cutoff off.
+  min_quick: 50
+  quick_audit_pct: 10
+  sheet_min_score: 45       # below this (or verdict Avoid) -> "Screened out" tab
+  alert_min_score: 70       # emailed to you at or above this
+  max_triage_per_run: 700   # spending guard-rail

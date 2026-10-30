@@ -1,0 +1,26 @@
+name: Tests
+
+on:
+  push:
+    paths: ["radar/**", "config/**", "tests/**", "apps_script/**", "requirements.txt"]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests
+        env:
+          ANTHROPIC_API_KEY: not-needed-for-tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Apps Script tests
+        run: node --test tests/apps_script/code.test.js

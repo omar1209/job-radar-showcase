@@ -1,0 +1,145 @@
+# Employers read directly from their own careers systems (earliest + most
+# reliable source). Every entry below was verified to respond when it was added (2026-10-21 to 10-28).
+# Anyone not listed is still covered through LinkedIn and Indeed.
+#
+# To add one: find a job on their careers site and look at the URL.
+#   https://TENANT.wdN.myworkdayjobs.com/SITE/job/...   -> workday
+#   https://boards.greenhouse.io/SLUG or job-boards...   -> greenhouse
+#   https://jobs.lever.co/SLUG                           -> lever
+#   https://jobs.ashbyhq.com/SLUG                        -> ashby
+#   https://careers.X.com/job/...  (SAP SuccessFactors)  -> successfactors (domain)
+# Optional `company:` = the employer's name when it differs from `name` (two sites, one employer).
+
+workday:
+  # Workday has no reliable "newest first" sort, so we search these words
+  # and take every result; already-seen jobs are skipped cheaply.
+  search_terms: ["British Columbia", "Vancouver", "Remote Canada"]
+  sites:
+    - {name: RBC, tenant: rbc, wd: wd3, site: RBCGLOBAL1}
+    - {name: TD, tenant: td, wd: wd3, site: TD_Bank_Careers}
+    - {name: BMO, tenant: bmo, wd: wd3, site: External}
+    - {name: CIBC, tenant: cibc, wd: wd3, site: search}
+    - {name: Manulife, tenant: manulife, wd: wd3, site: MFCJH_Jobs}
+    - {name: Canaccord Genuity, tenant: cgf, wd: wd10, site: CG}
+    - {name: Central 1, tenant: central1resources, wd: wd10, site: Central1}
+    - {name: Desjardins, tenant: desjardins, wd: wd10, site: Desjardins}
+    - {name: Intact, tenant: intactfc, wd: wd3, site: intactfc}
+    - {name: BCI, tenant: bci, wd: wd10, site: BCI_Careers}
+    - {name: BCAA, tenant: bcaa, wd: wd3, site: bcaacareers}
+    - {name: Fiera Capital, tenant: fieracapital, wd: wd3, site: Career}
+    - {name: Raymond James, tenant: raymondjames, wd: wd1, site: raymondjamescareers}
+    - {name: State Street, tenant: statestreet, wd: wd1, site: Global}
+    - {name: Northern Trust, tenant: ntrs, wd: wd1, site: northerntrust}
+    - {name: S&P Global, tenant: spgi, wd: wd5, site: SPGI_Careers}
+    - {name: Morningstar, tenant: morningstar, wd: wd5, site: morningstar}
+    - {name: Mastercard, tenant: mastercard, wd: wd1, site: CorporateCareers}
+    - {name: Visa, tenant: visa, wd: wd5, site: Visa}
+    - {name: Equifax, tenant: equifax, wd: wd5, site: External}
+    - {name: TransUnion, tenant: transunion, wd: wd5, site: transunion}
+    - {name: Moneris, tenant: moneris, wd: wd3, site: moneris}
+    - {name: BDC, tenant: bdc, wd: wd10, site: BDC_Careers}
+    - {name: Farm Credit Canada, tenant: fccfac, wd: wd3, site: careers-carrieres}
+    - {name: UBC, tenant: ubc, wd: wd10, site: ubcstaffjobs}
+    - {name: Langara College, tenant: langara, wd: wd10, site: External_Employment_Opportunities}
+    - {name: TELUS Health, tenant: lifeworks, wd: wd3, site: External}
+    - {name: JLL, tenant: jll, wd: wd1, site: jllcareers}
+    - {name: QuadReal, tenant: quadreal, wd: wd10, site: quadreal}
+    - {name: Finning, tenant: finning, wd: wd3, site: External}
+    - {name: Aritzia, tenant: aritzia, wd: wd3, site: External}
+    - {name: BDO, tenant: bdo, wd: wd3, site: BDO}
+    - {name: PwC, tenant: pwc, wd: wd3, site: Global_Experienced_Careers}
+    - {name: PwC (campus), company: PwC, tenant: pwc, wd: wd3, site: Global_Campus_Careers}
+
+# SAP SuccessFactors career sites (searched by location, newest first). A site's own
+# `location_terms` replace the shared ones where its search ignores "BC" (checked 2026-10-28).
+successfactors:
+  location_terms: ["BC", "Remote"]
+  sites:
+    - {name: Scotiabank, domain: jobs.scotiabank.com}
+    - {name: ICBC, domain: careers.icbc.com}
+    - {name: BCLC, domain: careers.bclc.com}
+    - {name: TELUS, domain: careers.telus.com}
+    - {name: CMHC, domain: careers.cmhc-schl.gc.ca}
+    - {name: Deloitte, domain: careers.deloitte.ca}
+    - {name: EY, domain: careers.ey.com, location_terms: [Vancouver]}
+    - {name: Rogers, domain: jobs.rogers.com}
+    - {name: CN, domain: careers.cn.ca}
+    - {name: Purolator, domain: careers.purolator.com, location_terms: [British Columbia]}
+    - {name: Coast Capital, domain: careers.coastcapitalsavings.com}
+    - {name: City of Vancouver, domain: jobs.vancouver.ca}
+    - {name: Bank of Canada, domain: careers.bankofcanada.ca}
+    - {name: Canada Life, domain: jobs.canadalife.com, location_terms: [British Columbia]}
+    - {name: BCFSA, domain: careers.bcfsa.ca, location_terms: [British Columbia]}
+
+greenhouse:
+  - {name: Hootsuite, slug: hootsuite}
+  - {name: Unbounce, slug: unbounce}
+  - {name: Later, slug: later}
+  - {name: MobSquad, slug: mobsquad}
+  - {name: Ritual, slug: ritual}
+
+lever:
+  - {name: Plooto, slug: plooto}
+  - {name: Fullscript, slug: fullscript}
+
+ashby:
+  - {name: Wealthsimple, slug: wealthsimple}
+  - {name: Visier, slug: visier}
+  - {name: Procurify, slug: procurify}
+  - {name: Thinkific, slug: thinkific}
+  - {name: Trulioo, slug: trulioo}
+  - {name: KOHO, slug: koho}
+  - {name: Neo Financial, slug: neofinancial}
+  - {name: Float, slug: float}
+  - {name: Jane, slug: jane}
+  - {name: Dapper Labs, slug: dapper}
+
+smartrecruiters:
+  - {name: Leger, slug: Leger2}
+
+oracle:
+  - {name: First West Credit Union, host: fa-eomj-saasfaprod1.fa.ocs.oraclecloud.com, site: CX_1001}
+  - {name: Ipsos, host: ecqf.fa.em2.oraclecloud.com, site: CX}
+  - {name: RB Global, host: fa-exew-saasfaprod1.fa.ocs.oraclecloud.com, site: CX_1}
+  - {name: Teekay, host: eipv.fa.us6.oraclecloud.com, site: CX_2001}
+  - {name: BC Ferries, host: bcferries-iacdzv.fa.ocs.oraclecloud.com, site: CX_1}   # added 2026-10-28
+
+# iCIMS career portals (newest 100 postings each run).
+icims:
+  - {name: Vancouver Coastal Health, host: careers-vch.icims.com, province: BC}
+  - {name: Providence Health Care, host: careers-phc.icims.com, province: BC}
+
+# iCIMS "Jibe" career sites (JSON feed, newest first).
+jibe:
+  - {name: Fraser Health, host: jobs.fraserhealth.ca}
+  - {name: KPMG, host: careers.kpmg.ca}
+
+# UKG / UltiPro job boards (recruiting.ultipro.ca/<tenant>/JobBoard/<board>).
+ukg:
+  - {name: MNP, tenant: MNP5000MNPL, board: 062c8fba-7371-4cd7-9e8a-94a0b8019ffc}
+  - {name: Beem (BlueShore), company: Beem Credit Union, tenant: NOR5001, board: e96c300a-1c00-4c51-ac8c-e8752ddc3993}
+  - {name: Prospera Credit Union, tenant: WES5000WESCU, board: 1c521f28-04a8-453e-b6c8-1e59b094736c}
+  - {name: Co-operators, tenant: COO5000COOP, board: 163383cc-cbae-4201-956e-c5e437bbfeb3, domain: recruiting.ultipro.com}
+
+# Taleo Business Edition career sections. `location`: for sites whose listings name no place.
+taleo_be:
+  - {name: SFU, host: tre.tbe.taleo.net, path: tre01, org: SIMOFRAS, cws: 37, province: BC}
+  - {name: Grant Thornton, host: phh.tbe.taleo.net, path: phh01, org: GRANTTHORNTON, cws: 56}
+  - {name: Grant Thornton (new grads), company: Grant Thornton, host: phh.tbe.taleo.net, path: phh01, org: GRANTTHORNTON, cws: 57}
+  # Added 2026-10-28 (checked with this reader that day).
+  - {name: City of Burnaby, host: tre.tbe.taleo.net, path: tre01, org: CITYBURNABY, cws: 37, location: "Burnaby, BC"}
+  - {name: City of New Westminster, host: tre.tbe.taleo.net, path: tre01, org: Q8Z9AA, cws: 37, location: "New Westminster, BC"}
+  - {name: BC Securities Commission, host: tre.tbe.taleo.net, path: tre01, org: BCSC, cws: 38, province: BC}
+
+# BC Public Service (all ministries) - read directly from its job board.
+bc_public_service: true
+
+# TransLink, SkyTrain (BC Rapid Transit), Coast Mountain Bus and Transit Security - one list for all four.
+translink: true
+
+# Federal public service (GC Jobs). Postings stay open for weeks, so it's read every 3 hours.
+gcjobs:
+  every_hours: 3
+
+# Employers found automatically from job-board apply links are kept in data/discovered.json
+# (same format as this file) and read like the ones above.

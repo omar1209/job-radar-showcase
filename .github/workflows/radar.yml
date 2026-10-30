@@ -1,0 +1,48 @@
+name: Job Radar
+
+on:
+  # Started hourly by the tracker Sheet's Apps Script (kickRadar): GitHub's own
+  # schedule skipped most runs. "Run workflow" in the Actions tab also works.
+  workflow_dispatch: {}
+
+concurrency:
+  group: radar
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # to save data/seen.json and data/discovered.json
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40   # normal runs take 5-8 minutes; the first run after adding sources takes longer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # latest seen.json when the run starts, not when it was requested
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run radar
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SHEET_WEBAPP_URL: ${{ secrets.SHEET_WEBAPP_URL }}
+          SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
+        run: python -m radar.main
+      - name: Save memory of seen jobs
+        if: always()
+        run: |
+          git config user.name "job-radar"
+          git config user.email "job-radar@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update seen jobs"
+          # If data/ changed on GitHub during the run, keep this run's version rather than fail.
+          for i in 1 2 3; do
+            git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          exit 1
