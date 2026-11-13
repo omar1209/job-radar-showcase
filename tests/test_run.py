@@ -180,7 +180,7 @@ PAGE = ('<ul><li><h3 class="description__job-criteria-subheader">Seniority level
 def linkedin_posting(n, title="Data Analyst"):
     from radar.sources import boards
     j = Job(source="linkedin", company="Acme", title=title, location="Vancouver, British Columbia, Canada",
-            url=f"https://www.linkedin.com/jobs/view/{1000000000 + n}", posted="2026-10-27")
+            url=f"https://www.linkedin.com/jobs/view/{1000000000 + n}", posted=datetime.now(timezone.utc).date().isoformat())  # recent, so the retry window never ages it out
     j.label = "linkedin: data"
     j.fetch = boards._linkedin_detail(j)
     return j
